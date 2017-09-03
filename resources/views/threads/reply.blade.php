@@ -1,0 +1,1 @@
+<reply :data="{{ $reply }}"  v-clock></reply>
