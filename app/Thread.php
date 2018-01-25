@@ -11,7 +11,7 @@ class Thread extends Model
 {
 
 
-    use RecordsActivity, hasDatabasePolicy;
+    use RecordsActivity, HasDatabasePolicy;
 
     protected $guarded = [];
 
