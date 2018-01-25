@@ -17,7 +17,7 @@ class SubscribeToThreadsTest extends TestCase
     public function an_authenticated_user_can_subscribe_to_threads()
     {
 
-        $thread = create('App\Thread');
+        $thread = create('laravel\Thread');
 
         $this->signIn();
 
@@ -38,7 +38,7 @@ class SubscribeToThreadsTest extends TestCase
 
         $this->withExceptionHandling();
 
-        $thread = create('App\Thread');
+        $thread = create('laravel\Thread');
 
         $this->post($thread->path() . '/subscriptions')
             ->assertRedirect('login');
@@ -51,7 +51,7 @@ class SubscribeToThreadsTest extends TestCase
     {
 
 
-        $thread = create('App\Thread');
+        $thread = create('laravel\Thread');
 
         $this->signIn();
 

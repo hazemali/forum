@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Activity;
+use laravel\Activity;
 use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -20,10 +20,10 @@ class ActivityTest extends TestCase
 
         $this->signIn();
 
-        $thread = create('App\Thread', ['user_id' => auth()->id()]);
+        $thread = create('laravel\Thread', ['user_id' => auth()->id()]);
 
         $this->assertDatabaseHas('activities', [
-            'subject_type' => 'App\Thread',
+            'subject_type' => 'laravel\Thread',
             'user_id' => auth()->id(),
             'type' => 'created_thread',
             'subject_id' => $thread->id
@@ -36,7 +36,7 @@ class ActivityTest extends TestCase
     {
 
         $this->signIn();
-        $reply = create('App\Reply');
+        $reply = create('laravel\Reply');
 
         $this->assertEquals(2, Activity::count());
     }
@@ -47,8 +47,8 @@ class ActivityTest extends TestCase
     {
 
         $this->signIn();
-        create('App\Thread', ['user_id' => auth()->id()]);
-        create('App\Thread', [
+        create('laravel\Thread', ['user_id' => auth()->id()]);
+        create('laravel\Thread', [
             'user_id' => auth()->id(),
             'created_at' => carbon::now()->subWeek()
         ]);

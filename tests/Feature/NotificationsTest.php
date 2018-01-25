@@ -29,7 +29,7 @@ class NotificationsTest extends TestCase
     {
 
 
-        $thread = create('App\Thread')->subscribe();
+        $thread = create('laravel\Thread')->subscribe();
 
 
         $thread->addReply([
@@ -42,7 +42,7 @@ class NotificationsTest extends TestCase
 
 
         $thread->addReply([
-            'user_id' => create('App\User')->id,
+            'user_id' => create('laravel\User')->id,
             'body' => 'Some reply here'
         ]);
 

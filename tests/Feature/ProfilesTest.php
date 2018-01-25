@@ -19,7 +19,7 @@ class ProfilesTest extends TestCase
 
         parent::setUp();
 
-        $this->user = create('App\User');
+        $this->user = create('laravel\User');
 
         $this->signIn($this->user);
 
@@ -39,7 +39,7 @@ class ProfilesTest extends TestCase
     public function profiles_display_all_threads_created_by_the_associated_user(){
 
 
-        $thread = create('App\Thread',['user_id' => $this->user->id]);
+        $thread = create('laravel\Thread',['user_id' => $this->user->id]);
 
         $this->get("profiles/{$this->user->name}")
             ->assertSee($thread->title)

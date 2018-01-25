@@ -40,3 +40,7 @@ Route::patch('replies/{reply}', 'ReplyController@update');
 // favorites
 Route::post('replies/{reply}/favorites', 'FavoritesController@store');
 Route::delete('replies/{reply}/favorites', 'FavoritesController@destroy');
+
+Route::get('api/users', 'Api\UsersController@index');
+Route::post('api/users/{user}/avatar' , 'Api\AvatarController@store')
+->middleware('auth')->name('avatar');

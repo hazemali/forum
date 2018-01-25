@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace laravel;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,11 +13,12 @@ class Activity extends Model
 
     public function subject()
     {
-        return $this->morphTo();
+       return    $this->morphTo();
     }
 
     public static function feed($user, $take = 50)
     {
+
         return static::where('user_id',$user->id)
             ->latest()
             ->take($take)

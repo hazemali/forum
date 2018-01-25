@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Providers;
+namespace laravel\Providers;
 
-use App\Channel;
+use laravel\Channel;
 use Barryvdh\Debugbar\ServiceProvider as DebugerServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,6 +25,9 @@ class AppServiceProvider extends ServiceProvider
             $view->with('channels', $channels);
 
         });
+
+        \Validator::extend('spamFree' , 'laravel\Rules\SpamFree@passes');
+
 
     }
 

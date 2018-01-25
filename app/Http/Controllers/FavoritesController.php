@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace laravel\Http\Controllers;
 
-use App\Favorite;
-use App\Reply;
+use laravel\Favorite;
+use laravel\Reply;
 use Illuminate\Http\Request;
 
 class FavoritesController extends Controller

@@ -12,7 +12,7 @@
 */
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(App\User::class, function (Faker\Generator $faker) {
+$factory->define(laravel\User::class, function (Faker\Generator $faker) {
     static $password;
 
     return [
@@ -24,38 +24,39 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 });
 
 
-$factory->define(App\Thread::class, function (Faker\Generator $faker) {
+$factory->define(laravel\Thread::class, function (Faker\Generator $faker) {
 
     return [
         'title' => $faker->sentence,
         'body' => $faker->paragraph,
         'user_id' => function () {
-            return factory('App\User')->create()->id;
+            return factory('laravel\User')->create()->id;
         },
         'channel_id' => function () {
-            return factory('App\Channel')->create()->id;
-        }
+            return factory('laravel\Channel')->create()->id;
+        },
+        'visits' => 0
     ];
 
 });
 
 
-$factory->define(App\Reply::class, function (Faker\Generator $faker) {
+$factory->define(laravel\Reply::class, function (Faker\Generator $faker) {
 
     return [
         'body' => $faker->paragraph,
         'user_id' => function () {
-            return factory('App\User')->create()->id;
+            return factory('laravel\User')->create()->id;
         },
         'thread_id' => function () {
-            return factory('App\Thread')->create()->id;
+            return factory('laravel\Thread')->create()->id;
         }
     ];
 
 });
 
 
-$factory->define(App\Channel::class, function (Faker\Generator $faker) {
+$factory->define(laravel\Channel::class, function (Faker\Generator $faker) {
     $name = $faker->word;
     return [
         'name' => $name,
@@ -68,13 +69,13 @@ $factory->define(Illuminate\Notifications\DatabaseNotification::class, function 
 
     return [
         'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
-        'type' => 'App\Notifications\ThreadWasUpdated',
+        'type' => 'laravel\Notifications\ThreadWasUpdated',
         'notifiable_id' => function () {
 
-            return auth()->id() ?: factory('App\Reply')->create()->id;
+            return auth()->id() ?: factory('laravel\Reply')->create()->id;
 
         },
-        'notifiable_type' => 'App\User',
+        'notifiable_type' => 'laravel\User',
         'data' => ['foo' => 'bar']
     ];
 

@@ -39,7 +39,6 @@
 
         created(){
 
-
             var page = location.search.match(/page=(\d+)/) ;
 
              page = page ? page[1] : 1;

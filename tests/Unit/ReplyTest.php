@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -17,9 +18,50 @@ class ReplyTest extends TestCase
 
     public function it_has_an_owner()
     {
-       $reply =  create('App\Reply');
+        $reply = create('laravel\Reply');
 
-       $this->assertInstanceOf('App\User' , $reply->owner);
+        $this->assertInstanceOf('laravel\User', $reply->owner);
+    }
+
+
+    /** @test */
+    public function it_knows_if_was_it_just_published()
+    {
+
+        $reply = create('laravel\Reply');
+
+        $this->assertTrue($reply->wasJustPublished());
+
+        $reply->created_at = Carbon::now()->subMonth();
+
+        $this->assertFalse($reply->wasJustPublished());
+
+    }
+
+    /** @test */
+    public function it_inspect_the_mentioned_users()
+    {
+
+
+        $reply = new \laravel\Reply([
+            'body' => 'hello @zooma and @hazem'
+        ]);
+
+        $this->assertEquals(['zooma', 'hazem'], $reply->mentionedUsers());
+
+    }
+
+    /** @test */
+    public function it_wraps_mentioned_users_with_anchor_tags()
+    {
+        $reply = new \laravel\Reply([
+            'body' => 'hello @zooma'
+        ]);
+
+
+        $this->assertEquals('hello <a href="/profiles/zooma">@zooma</a>', $reply->body);
+
+
     }
 
 
@@ -28,7 +70,9 @@ class ReplyTest extends TestCase
     {
 
         $this->signIn();
-        $reply =  create('App\Reply' , ['user_id' => auth()->id()]);
+        $reply = create('laravel\Reply', ['user_id' => auth()->id()]);
         $this->assertTrue($reply->isAuthorized(auth()->id()));
     }
+
+
 }

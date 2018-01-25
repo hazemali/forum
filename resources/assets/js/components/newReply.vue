@@ -28,6 +28,9 @@
 
 <script>
 
+    import 'jquery.caret';
+    import 'at.js';
+
     export default
     {
 
@@ -37,9 +40,25 @@
             return {
                 body: null
             }
-        }
+        },
 
-        ,
+        mounted(){
+
+            $('#body').atwho({
+                at: "@",
+                delay: 300,
+                callbacks: {
+
+                    remoteFilter: function(query, callback) {
+
+                        $.getJSON("/Api/users", {name: query}, function(data) {
+                            callback(data)
+                        });
+                    }
+                }
+            });
+
+        },
         computed: {
             signedIn: function () {
                 return window.app.signedIn;
@@ -59,7 +78,7 @@
 
                 }).catch(error => {
 
-                    flashError('Please post a valid reply','error');
+                    flashError(error.response.data,'error');
                 });
             }
         }

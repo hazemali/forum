@@ -1,7 +1,9 @@
 <?php
 
-namespace App;
+namespace laravel;
 
+
+use laravel\Notifications\ReplyWasFavoried;
 
 trait Favoritable
 {
@@ -41,6 +43,9 @@ trait Favoritable
         $attributes = ['user_id' => auth()->id()];
 
         if (!$this->favorites()->where($attributes)->exists()) {
+
+            if (method_exists($this, 'FavoritedNotify')) $this->FavoritedNotify();
+
             return $this->favorites()->create($attributes);
         }
     }

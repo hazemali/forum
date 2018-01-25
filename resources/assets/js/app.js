@@ -7,7 +7,6 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -19,6 +18,7 @@ Vue.component('flash', require('./components/flash.vue'));
 Vue.component('thread-view', require('./pages/thread.vue'));
 Vue.component('paginator',require('./components/paginator.vue'));
 Vue.component('user-notifications',require('./components/UserNotifications.vue'));
+Vue.component('avatar-form',require('./components/AvatarForm.vue'));
 
 const app = new Vue({
     el: '#app'

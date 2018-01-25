@@ -1,8 +1,10 @@
 <?php
 
-namespace App;
+namespace laravel;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use laravel\Notifications\ReplyWasFavoried;
 
 
 class Reply extends Model
@@ -47,6 +49,15 @@ class Reply extends Model
     }
 
 
+    public function FavoritedNotify()
+    {
+
+        if ($this->owner->id != auth()->id())
+            $this->owner->notify(new ReplyWasFavoried($this, auth()->user()));
+
+    }
+
+
     public function thread()
     {
         return $this->belongsTo(Thread::class);
@@ -62,5 +73,33 @@ class Reply extends Model
     }
 
 
+    public function wasJustPublished()
+    {
+        return $this->created_at->gt(Carbon::now()->subMinute(1));
+    }
+
+
+    /**
+     * @return User collection
+     */
+    public function mentionedUsers()
+    {
+
+        preg_match_all('/\@([^\s\.^\<]+)/', $this->body, $matches);
+
+        return $matches[1];
+
+    }
+
+
+    /**
+     * @param $body
+     */
+    public function setBodyAttribute($body)
+    {
+        $this->attributes['body'] = preg_replace('/\@([\w\-]+)/',
+            '<a href="/profiles/$1">$0</a>', $body);
+
+    }
 }
 

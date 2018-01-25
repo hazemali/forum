@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace laravel\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -13,8 +13,9 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Thread' => 'App\Policies\ThreadPolicy',
-        'App\Reply' => 'App\Policies\ReplyPolicy',
+        'laravel\Thread' => 'laravel\Policies\ThreadPolicy',
+        'laravel\Reply' => 'laravel\Policies\ReplyPolicy',
+        'laravel\User' => 'laravel\Policies\UserPolicy',
     ];
 
     /**

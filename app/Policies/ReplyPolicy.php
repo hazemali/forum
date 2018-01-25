@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Policies;
+namespace laravel\Policies;
 
-use App\Reply;
-use App\User;
+use laravel\Reply;
+use laravel\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ReplyPolicy
@@ -14,7 +14,7 @@ class ReplyPolicy
     /**
      * Determine whether the user can update the thread.
      *
-     * @param  \App\User $user
+     * @param  \laravel\User $user
      * @param Reply $reply
      * @return mixed
      */
@@ -24,4 +24,13 @@ class ReplyPolicy
         return $reply->isAuthorized($user->id);
     }
 
+
+    public function create(User $user )
+    {
+
+        $lastReply = $user->fresh()->lastReply ;
+        if(!$lastReply) return true ;
+
+        return ! $user->lastReply->wasJustPublished() ;
+    }
 }

@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace laravel\Http\Controllers;
 
-use App\Thread;
-use App\channel;
-use App\Filters\ThreadFilters;
+use laravel\Thread;
+use laravel\channel;
+use laravel\Filters\ThreadFilters;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use laravel\Trending;
 
 class ThreadsController extends Controller
 {
@@ -24,9 +25,10 @@ class ThreadsController extends Controller
      *
      * @param channel $channel
      * @param ThreadFilters $filters
+     * @param Trending $trending
      * @return Response
      */
-    public function index(Channel $channel, ThreadFilters $filters)
+    public function index(Channel $channel, ThreadFilters $filters, Trending $trending)
     {
 
         $threads = $this->getThreads($channel, $filters);
@@ -34,8 +36,10 @@ class ThreadsController extends Controller
         if (request()->wantsJson()) {
             return $threads;
         }
-
-        return view('threads.index', compact('threads'));
+        return view('threads.index', [
+            'threads' => $threads,
+            'trending_threads' => $trending->get()
+        ]);
     }
 
     /**
@@ -58,10 +62,11 @@ class ThreadsController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'title' => 'required',
-            'body' => 'required',
+            'title' => 'required|spamFree',
+            'body' => 'required|spamFree',
             'channel_id' => 'required|exists:channels,id'
         ]);
+
 
         $thread = Thread::create([
             'title' => request('title'),
@@ -80,12 +85,19 @@ class ThreadsController extends Controller
      *
      * @param $channel
      * @param Thread $thread
+     * @param Trending $trending
      * @return Response
      */
 
-    public function show($channel, Thread $thread)
+    public function show($channel, Thread $thread, Trending $trending)
     {
 
+        if (auth()->check())
+            auth()->user()->read($thread);
+
+        $thread->increment('visits');
+
+        $trending->push($thread);
 
         return view('threads.show', compact('thread'));
     }
@@ -93,7 +105,7 @@ class ThreadsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Thread|\App\Threads $threads
+     * @param Thread|\laravel\Threads $threads
      * @return Response
      */
     public function edit(Thread $threads)
@@ -105,7 +117,7 @@ class ThreadsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param Threads|\App\Threads $threads
+     * @param Threads|\laravel\Threads $threads
      * @return Response
      */
     public function update(Request $request, Threads $threads)
@@ -116,7 +128,7 @@ class ThreadsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Thread|\App\Threads $thread
+     * @param Thread|\laravel\Threads $thread
      * @return Response
      */
     public function destroy($channel, Thread $thread)
@@ -146,8 +158,8 @@ class ThreadsController extends Controller
             $threads->where('channel_id', $channel->id);
         }
 
-        $threads = $threads->get();
-        return $threads;
+
+        return $threads->paginate(25);
     }
 
 

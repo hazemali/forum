@@ -12,6 +12,9 @@
 
                             <div class="level">
                             <span class="flex">
+                             <img class="" src="{{$thread->creator->avatar_path}}"
+                                         alt="{{$thread->creator->name}}" width="25" height="25"/>
+
                                 <a href="{{$thread->creator->path()}}">
                                     {{$thread->creator->name}}
                                 </a>
@@ -78,4 +81,8 @@
     </thread-view>
 
 
+@endsection
+
+@section('head')
+    <link rel="stylesheet" href="{{ asset('css/vendor/jquery.atwho.min.css') }}"/>
 @endsection

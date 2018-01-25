@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace laravel\Http\Controllers;
 
-use App\Thread;
+use laravel\Thread;
 use Illuminate\Http\Request;
 
 class ThreadsSubscriptionsController extends Controller

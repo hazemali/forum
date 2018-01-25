@@ -3,34 +3,38 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+            <div class="col-md-8">
+                @include('threads._list')
+                {{$threads->render()}}
+            </div>
 
-                @forelse ($threads as $thread)
-
+            @if(count($trending_threads))
+                <div class="col-md-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-
-                            <div class="level">
-                                <h4 class="flex"><a href="{{ $thread->path() }}">{{$thread->title}}</a></h4>
-                                <strong>
-                                    <a href="{{ $thread->path() }}">
-                                        {{$thread->replies_count}} {{ str_plural('reply',$thread->replies_count) }}
-                                    </a>
-                                </strong>
-
-                            </div>
-
+                            Trending Threads
                         </div>
-
                         <div class="panel-body">
-                            {{$thread->body}}
+
+                            <ul class="list-group">
+
+                                @foreach ($trending_threads as $thread)
+                                    <li class="list-group-item">
+                                        <a href="{{$thread->path}}">
+                                            {{$thread->title}}
+                                        </a>
+                                    </li>
+
+                                @endforeach
+
+                            </ul>
+
                         </div>
                     </div>
-                    @empty
-                        <p> There are no relevant results at this time.</p>
-                @endforelse
-
-            </div>
+                </div>
+            @endif
         </div>
+
     </div>
+
 @endsection

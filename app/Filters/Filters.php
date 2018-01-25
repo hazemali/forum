@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filters;
+namespace laravel\Filters;
 
 
 use Illuminate\Http\Request;

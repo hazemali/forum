@@ -1,8 +1,8 @@
 <?php
 
-namespace App;
+namespace laravel;
 
-use App\Notifications\ThreadWasUpdated;
+use laravel\Notifications\ThreadWasUpdated;
 use Illuminate\Database\Eloquent\Model;
 
 class ThreadSubscriptions extends Model

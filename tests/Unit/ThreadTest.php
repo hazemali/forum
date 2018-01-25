@@ -2,6 +2,8 @@
 
 namespace Tests\Unit;
 
+use laravel\Notifications\ThreadWasUpdated;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -22,7 +24,7 @@ class ThreadTest extends TestCase
         $this->signIn();
 
 
-        $this->thread = create('App\Thread', ['user_id' => auth()->id()]);
+        $this->thread = create('laravel\Thread', ['user_id' => auth()->id()]);
 
 
     }
@@ -35,7 +37,7 @@ class ThreadTest extends TestCase
     {
 
 
-        $this->assertInstanceOf('App\User', $this->thread->creator);
+        $this->assertInstanceOf('laravel\User', $this->thread->creator);
 
     }
 
@@ -67,27 +69,49 @@ class ThreadTest extends TestCase
 
     }
 
-    /** @test * */
+    /** @test */
+    public function a_thread_notifies_all_registered_subscribers_when_a_reply_is_added()
+    {
+
+        Notification::fake();
+
+        $this->signIn()
+            ->thread
+            ->subscribe()
+            ->addReply([
+                'body' => 'foobar',
+                'user_id' => 999
+            ]);
+
+        Notification::assertSentTo(auth()->user(), ThreadWasUpdated::class);
+
+
+    }
+    
+    
+
+
+    /** @test **/
     public function a_thread_belongs_to_channel()
     {
 
-        $this->assertInstanceOf('App\Channel', $this->thread->channel);
+        $this->assertInstanceOf('laravel\Channel', $this->thread->channel);
 
     }
 
 
-    /** @test * */
+    /** @test **/
     public function a_policy_associated_with_the_thread_creator_after_thread_created()
     {
         $this->assertTrue($this->thread->isAuthorized());
     }
 
 
-    /** @test * */
+    /** @test **/
     public function a_thread_can_be_subscribe_to()
     {
 
-        $thread = create('App\Thread');
+        $thread = create('laravel\Thread');
 
         $thread->subscribe($userId = 1);
 
@@ -101,9 +125,10 @@ class ThreadTest extends TestCase
 
 
     /** @test **/
-    public function a_thread_can_unsubscribed_from(){
+    public function a_thread_can_unsubscribed_from()
+    {
 
-        $thread = create('App\Thread');
+        $thread = create('laravel\Thread');
 
         $thread->subscribe($userId = 1);
 
@@ -115,14 +140,15 @@ class ThreadTest extends TestCase
         );
 
     }
-    
-    
+
+
     /** @test **/
-    public function it_knows_if_the_authenticated_user_is_subscribe_to_it(){
+    public function it_knows_if_the_authenticated_user_is_subscribe_to_it()
+    {
 
         $this->signIn();
 
-        $thread = create('App\Thread');
+        $thread = create('laravel\Thread');
 
         $this->assertFalse($thread->isSubscribed);
 
@@ -132,7 +158,27 @@ class ThreadTest extends TestCase
         $this->assertTrue($thread->fresh()->isSubscribed);
 
 
+    }
+
+    /** @test */
+    public function a_thread_can_check_if_an_authenticated_user_has_read_all_replies()
+    {
+
+        $this->signIn();
+
+        $thread = create('laravel\Thread');
+
+        tap(auth()->user() , function ($user)  use ($thread){
+            $this->assertTrue($thread->hasUpdatesFor());
+
+            $user->read($thread);
+
+            $this->assertFalse($thread->hasUpdatesFor());
+        });
+
 
     }
+
+
 
 }

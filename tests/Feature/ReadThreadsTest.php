@@ -18,7 +18,7 @@ class ReadThreadsTest extends TestCase
     {
 
         parent::setUp();
-        $this->thread = create('App\Thread');
+        $this->thread = create('laravel\Thread');
 
     }
 
@@ -51,11 +51,11 @@ class ReadThreadsTest extends TestCase
     public function a_user_can_filter_threads_according_to_a_channel()
     {
 
-        $channel = create('App\Channel');
+        $channel = create('laravel\Channel');
 
-        $threadInChannel = create('App\Thread', ['channel_id' => $channel->id]);
+        $threadInChannel = create('laravel\Thread', ['channel_id' => $channel->id]);
 
-        $threadNotInChannel = create('App\Thread');
+        $threadNotInChannel = create('laravel\Thread');
 
         $this->get("threads/{$channel->slug}")
             ->assertSee($threadInChannel->title)
@@ -66,9 +66,9 @@ class ReadThreadsTest extends TestCase
     public function a_user_can_filter_threads_by_any_name()
     {
 
-        $this->signIn(create('App\User', ['name' => 'JohnDoe']));
-        $threadByJohn = create('App\Thread', ['user_id' => auth()->id()]);
-        $threadNotByJohn = create('App\Thread');
+        $this->signIn(create('laravel\User', ['name' => 'JohnDoe']));
+        $threadByJohn = create('laravel\Thread', ['user_id' => auth()->id()]);
+        $threadNotByJohn = create('laravel\Thread');
 
         $this->get('threads?by=JohnDoe')
             ->assertSee($threadByJohn->title)
@@ -81,21 +81,21 @@ class ReadThreadsTest extends TestCase
     {
 
 
-        $threadWithTowReplies = create('App\Thread');
+        $threadWithTowReplies = create('laravel\Thread');
 
-        create('App\Reply', ['thread_id' => $threadWithTowReplies->id], 2);
+        create('laravel\Reply', ['thread_id' => $threadWithTowReplies->id], 2);
 
-        $threadWithThreeReplies = create('App\Thread');
+        $threadWithThreeReplies = create('laravel\Thread');
 
 
-        create('App\Reply', ['thread_id' => $threadWithThreeReplies->id], 3);
+        create('laravel\Reply', ['thread_id' => $threadWithThreeReplies->id], 3);
 
         $threadWithNoReplies = $this->thread;
 
 
         $response = $this->getJson('threads?popular=1')->json();
 
-        $this->assertEquals([3, 2, 0], array_column($response, 'replies_count'));
+        $this->assertEquals([3, 2, 0], array_column($response['data'], 'replies_count'));
 
     }
 
@@ -105,14 +105,14 @@ class ReadThreadsTest extends TestCase
     {
 
 
-        $threadWithReplies = create('App\Thread');
+        $threadWithReplies = create('laravel\Thread');
 
-        create('App\Reply', ['thread_id' => $threadWithReplies->id]);
+        create('laravel\Reply', ['thread_id' => $threadWithReplies->id]);
 
 
         $response = $this->getJson('threads?unanswered=1')->json();
 
-        $this->assertCount(1, $response);
+        $this->assertCount(1, $response['data']);
 
 
     }
@@ -125,7 +125,7 @@ class ReadThreadsTest extends TestCase
 
         $thread = $this->thread;
 
-        create('App\Reply', ['thread_id' => $thread->id], 2);
+        create('laravel\Reply', ['thread_id' => $thread->id], 2);
         $response = $this->getJson($thread->path() . '/replies')->json();
 
 

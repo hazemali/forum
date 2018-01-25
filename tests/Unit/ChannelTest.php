@@ -15,9 +15,9 @@ class ChannelTest extends TestCase
     /** @test **/
     public function it_consists_of_threads(){
 
-        $channel = create('App\Channel');
+        $channel = create('laravel\Channel');
 
-        $thread = create('App\Thread',['channel_id' => $channel->id]);
+        $thread = create('laravel\Thread',['channel_id' => $channel->id]);
 
         $this->assertTrue($channel->threads->contains($thread));
     }

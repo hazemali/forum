@@ -32,7 +32,13 @@ window.Vue = require('vue');
 var moment = require('moment');
 
 
-window.Vue.prototype.authorize = function (model, id) {
+window.Vue.prototype.authorize = function (handler) {
+
+    let user = window.app.user;
+    return user ? handler(JSON.parse(user)) : false;
+};
+
+/*window.Vue.prototype.authorize = function (model, id) {
 
     if (window.app.signedIn == false) return;
 
@@ -49,7 +55,7 @@ window.Vue.prototype.authorize = function (model, id) {
     }
 
 
-};
+};*/
 
 
 window.events = new Vue();

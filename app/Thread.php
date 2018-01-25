@@ -1,8 +1,10 @@
 <?php
 
-namespace App;
+namespace laravel;
 
 use Illuminate\Database\Eloquent\Model;
+use laravel\Events\ThreadReceivedReply;
+use laravel\Filters\ThreadFilters;
 
 
 class Thread extends Model
@@ -17,6 +19,7 @@ class Thread extends Model
     protected $with = ['creator', 'channel'];
 
     protected $appends = ['isSubscribed'];
+
 
     public static function boot()
     {
@@ -80,16 +83,11 @@ class Thread extends Model
         $reply = $this->replies()->create($reply);
 
 
-        $this->subscriptions
-            ->filter(function ($subscription) use ($reply) {
-
-                return $reply->user_id != $subscription->user_id;
-
-            })->each->notify($reply);
-
+        event(new ThreadReceivedReply($reply));
 
         return $reply;
     }
+
 
     public static function byChannel($channelId)
     {
@@ -97,7 +95,7 @@ class Thread extends Model
     }
 
 
-    public function scopeFilter($query, $filters)
+    public function scopeFilter($query, ThreadFilters $filters)
     {
         return $filters->apply($query);
     }
@@ -135,6 +133,12 @@ class Thread extends Model
         return $this->hasMany(ThreadSubscriptions::class);
     }
 
+    /**
+     * determine if the current user subscribed a thread
+     *
+     * @return bool
+     */
+
     public function getIsSubscribedAttribute()
     {
         return $this->subscriptions()
@@ -142,6 +146,15 @@ class Thread extends Model
             ->exists();
 
     }
+
+
+    public function hasUpdatesFor()
+    {
+
+        return $this->updated_at > cache(auth()->user()->getCacheVisitsKey($this));
+
+    }
+
 
 
 }

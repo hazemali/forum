@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Reply;
+use laravel\Reply;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -37,14 +37,14 @@ class ParticipateInForum extends TestCase
 
         $this->signIn();
 
-        $thread = factory('App\Thread')->create();
+        $thread = factory('laravel\Thread')->create();
 
-        $reply = factory('App\Reply')->make();
+        $reply = factory('laravel\Reply')->make();
 
         $this->post($thread->path() . '/replies', $reply->toArray());
 
-        $this->assertDatabaseHas('replies',['body' => $reply->body]);
-        $this->assertEquals(1,$thread->fresh()->replies_count);
+        $this->assertDatabaseHas('replies', ['body' => $reply->body]);
+        $this->assertEquals(1, $thread->fresh()->replies_count);
 
     }
 
@@ -56,9 +56,9 @@ class ParticipateInForum extends TestCase
 
         $this->withExceptionHandling()->signIn();
 
-        $thread = factory('App\Thread')->create();
+        $thread = factory('laravel\Thread')->create();
 
-        $reply = factory('App\Reply')->make(['body' => null]);
+        $reply = factory('laravel\Reply')->make(['body' => null]);
 
         $this->post($thread->path() . '/replies', $reply->toArray())->assertSessionHasErrors('body');
 
@@ -70,7 +70,7 @@ class ParticipateInForum extends TestCase
 
         $this->withExceptionHandling();
 
-        $reply = factory('App\Reply')->create(['user_id' => 999]);
+        $reply = factory('laravel\Reply')->create(['user_id' => 999]);
 
         $this->delete('replies/' . $reply->id)->assertRedirect('login');
 
@@ -87,7 +87,7 @@ class ParticipateInForum extends TestCase
 
         $this->withExceptionHandling()->signIn();
 
-        $reply = factory('App\Reply')->create(['user_id' => auth()->id()]);
+        $reply = factory('laravel\Reply')->create(['user_id' => auth()->id()]);
 
         $this->json('DELETE', 'replies/' . $reply->id)
             ->assertStatus(204);
@@ -96,7 +96,7 @@ class ParticipateInForum extends TestCase
             'id' => $reply->id
         ]);
 
-        $this->assertEquals(0 , $reply->thread->fresh()->replies_count);
+        $this->assertEquals(0, $reply->thread->fresh()->replies_count);
 
 
     }
@@ -107,7 +107,7 @@ class ParticipateInForum extends TestCase
     {
         $this->withExceptionHandling()->signIn();
 
-        $reply = factory('App\Reply')->create(['user_id' => auth()->id(), 'body' => 'foo']);
+        $reply = factory('laravel\Reply')->create(['user_id' => auth()->id(), 'body' => 'foo']);
 
 
         $updatedReply = 'foobar';
@@ -131,7 +131,7 @@ class ParticipateInForum extends TestCase
 
         $this->withExceptionHandling();
 
-        $reply = factory('App\Reply')->create(['user_id' => 999, 'body' => 'foo']);
+        $reply = factory('laravel\Reply')->create(['user_id' => 999, 'body' => 'foo']);
 
         $updateReply = 'foobar';
 
@@ -148,6 +148,65 @@ class ParticipateInForum extends TestCase
             'id' => $reply->id,
             'body' => 'foo'
         ]);
+
+
+    }
+
+
+    /** @test */
+    public function replies_that_contains_spam_may_not_be_created()
+    {
+        $this->withExceptionHandling();
+
+        $this->signIn();
+
+        $thread = factory('laravel\Thread')->create();
+
+        $reply = factory('laravel\Reply')->make([
+            'body' => 'Yahoo Customer Support'
+        ]);
+
+
+        $this->json('post', $thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(422);
+
+
+    }
+
+    /** @test */
+    public function users_may_only_reply_a_maximum_once_per_minute()
+    {
+
+        $this->withExceptionHandling();
+
+        $this->signIn();
+
+        $thread = factory('laravel\Thread')->create();
+
+        $reply = factory('laravel\Reply')->make([
+            'body' => 'My simple reply'
+        ]);
+
+
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(201);
+
+
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(429);
+
+    }
+    
+    /** @test */
+    public function a_thread_records_each_visit(){
+
+        $thread = create('laravel\Thread');
+
+        $this->assertSame(0 , $thread->visits);
+
+        $this->call('GET' , $thread->path());
+
+        $this->assertEquals(1 , $thread->fresh()->visits);
 
 
     }

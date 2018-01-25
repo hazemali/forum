@@ -1,7 +1,8 @@
 <?php
 
-namespace App;
+namespace laravel;
 
+use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -15,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password','avatar_path'
     ];
 
     /**
@@ -24,7 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token','email',
+        'password', 'remember_token', 'email',
     ];
 
 
@@ -39,8 +40,9 @@ class User extends Authenticatable
         return $this->hasMany(Thread::class)->latest();
     }
 
-    public function path(){
-        return Route('profiles.show',$this);
+    public function path()
+    {
+        return Route('profiles.show', $this);
     }
 
 
@@ -49,8 +51,37 @@ class User extends Authenticatable
         return $this->hasMany(Activity::class);
     }
 
-    public function policies(){
+    public function policies()
+    {
         return $this->hasMany(Policy::class);
     }
+
+
+    public function getCacheVisitsKey($thread)
+    {
+        return sprintf('users.%s.visits.%s', $this->id, $thread->id);
+    }
+
+
+    public function read($thread)
+    {
+        cache()->forever($this->getCacheVisitsKey($thread), carbon::now());
+
+    }
+
+    /**
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function lastReply(){
+
+        return $this->hasOne(Reply::class)->latest();
+
+    }
+
+    public function getAvatarPathAttribute($avatar)
+    {
+        return \asset($avatar?: 'images/default-avatar.png');
+    }
+
 }
 

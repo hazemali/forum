@@ -20,6 +20,7 @@
         json_encode([
             'csrfToken' => csrf_token(),
             'signedIn' => auth()->check(),
+            'user' => auth()->check() ?  auth()->user()->toJson() : null,
             'policies' => auth()->check() ?  auth()->user()->policies->toJson() : []
         ]) !!};
     </script>
@@ -39,6 +40,8 @@
         [v-clock]{display:none;}
 
     </style>
+
+    @yield('head')
 </head>
 <body>
 <div id="app">

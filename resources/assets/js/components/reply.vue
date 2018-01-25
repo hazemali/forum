@@ -6,7 +6,7 @@
             <div class="level">
                 <h5 class="flex">
                     <a :href="profileLink" v-text="this.data.owner.name"></a> said
-                   <span v-text="ago"></span>
+                    <span v-text="ago"></span>
                 </h5>
 
                 <div>
@@ -22,16 +22,20 @@
 
 
             <div v-if="editing">
-                <div class="form-group">
-                    <textarea class="form-control" v-model="body"></textarea>
-                </div>
+                <form @submit.prevent="update">
+                    <div class="form-group">
+                        <textarea class="form-control" v-model="body" required></textarea>
+                    </div>
 
-                <div class="level">
-                    <button class="btn btn-xs btn-primary" @click="update">update</button>
+                    <div class="level">
+                        <button class="btn btn-xs btn-primary">update</button>
 
-                    <button class="btn btn-xs btn-link" @click="editing = false">cancel</button>
-                </div>
+                        <button type="button" class="btn btn-xs btn-link" @click="editing = false;body = original_body;">cancel
+                        </button>
+                    </div>
+                </form>
             </div>
+
 
             <div v-else v-html="body"></div>
 
@@ -55,7 +59,7 @@
     import favorite from './favorite.vue';
     import moment from 'moment';
 
-    export default{
+    export default {
 
         components: {favorite},
 
@@ -65,6 +69,7 @@
             return {
                 editing: false,
                 body: this.data.body,
+                original_body: this.data.body,
                 existence: true,
                 id: this.data.id,
             };
@@ -73,46 +78,58 @@
             profileLink: function () {
                 return '/profiles/' + this.data.owner.name;
             },
-            signedIn : function(){
+            signedIn: function () {
                 return window.app.signedIn;
-            } ,
-
-            canUpdate: function(){
-
-                if(this.authorized){
-                  return true;
-                }
-
-                return this.authorize('App\\Reply' , this.id);
             },
 
-            authorized: function(){
-                if(typeof(this.data.Authorized) != undefined ){
+            canUpdate: function () {
+
+                if (this.authorized) {
+                    return true;
+                }
+
+                return this.authorize(user => user.id ==  this.data.user_id);
+            },
+
+            authorized: function () {
+
+                if (typeof(this.data.Authorized) != undefined) {
                     return this.data.Authorized;
                 }
                 return false;
             },
-            ago: function(){
+            ago: function () {
                 return moment(this.data.created_at).fromNow() + '...';
             }
 
         },
         methods: {
-            update (){
+            update() {
+
                 axios.patch('/replies/' + this.data.id, {
                     body: this.body
+                }).then(response => {
+
+                    this.editing = false;
+                    this.original_body = this.body;
+
+                    flash('the reply was updated!');
+                }).catch(error => {
+
+                    this.editing = true;
+
+                    flashError(error.response.data, 'error');
+
                 });
 
-                this.editing = false;
 
-                flash('the reply was updated!');
             },
 
-            destroy(){
+            destroy() {
 
                 axios.delete('/replies/' + this.id);
 
-                this.$emit('deleted' , this.id);
+                this.$emit('deleted', this.id);
 
             }
 

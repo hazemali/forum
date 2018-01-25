@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace laravel\Http\Controllers;
 
-use App\User;
+use laravel\User;
 use Illuminate\Http\Request;
 
 class NotificationsController extends Controller

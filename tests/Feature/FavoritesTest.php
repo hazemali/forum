@@ -27,7 +27,7 @@ class FavoritesTest extends TestCase
 
         $this->signIn();
 
-        $reply = create('App\Reply');
+        $reply = create('laravel\Reply');
 
         $reply->favorite();
 
@@ -43,7 +43,7 @@ class FavoritesTest extends TestCase
 
         $this->signIn();
 
-        $reply = create('App\Reply');
+        $reply = create('laravel\Reply');
 
         $this->post('replies/'.$reply->id.'/favorites');
 
@@ -56,7 +56,7 @@ class FavoritesTest extends TestCase
 
         $this->signIn();
 
-        $reply = create('App\Reply');
+        $reply = create('laravel\Reply');
 
         try {
             $this->post('replies/' . $reply->id . '/favorites');

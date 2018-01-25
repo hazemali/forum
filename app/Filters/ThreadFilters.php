@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filters;
+namespace laravel\Filters;
 
-use App\User;
+use laravel\User;
 use Illuminate\Http\Request;
 
 class ThreadFilters extends Filters
@@ -38,7 +38,6 @@ class ThreadFilters extends Filters
 
     public function unanswered()
     {
-
 
         return $this->builder->where('replies_count', 0);
     }

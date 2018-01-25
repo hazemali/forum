@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications;
+namespace laravel\Notifications;
 
 use Illuminate\Notifications\Notification;
 

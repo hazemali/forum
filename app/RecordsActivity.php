@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App;
+namespace laravel;
 
 
 trait RecordsActivity
@@ -41,7 +41,7 @@ trait RecordsActivity
 
     public function activity()
     {
-        return $this->morphMany('App\Activity', 'subject');
+        return $this->morphMany('laravel\Activity', 'subject');
     }
 
 
