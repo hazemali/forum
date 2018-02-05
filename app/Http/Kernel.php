@@ -3,6 +3,7 @@
 namespace laravel\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use laravel\Http\Middleware\RedirectIfEmailNotConfirmed;
 
 class Kernel extends HttpKernel
 {
@@ -56,5 +57,6 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \laravel\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'must-be-confirmed' => RedirectIfEmailNotConfirmed::class
     ];
 }

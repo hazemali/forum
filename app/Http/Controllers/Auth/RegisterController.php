@@ -2,6 +2,9 @@
 
 namespace laravel\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use laravel\Mail\PleasConfirmYourEmail;
 use laravel\User;
 use laravel\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -66,6 +69,22 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'confirmation_token' => str_random(25),
         ]);
+    }
+
+
+    /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function registered(Request $request, $user)
+    {
+
+        Mail::to($user)->send(new PleasConfirmYourEmail($user));
+        return redirect($this->redirectPath());
     }
 }

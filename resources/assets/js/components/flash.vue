@@ -13,31 +13,33 @@
 <script>
     export default {
 
-        props: ['message'],
+        props: ['message', 'errormessage'],
 
-        computed:{
+        computed: {
 
-            classes: function(){
+            classes: function () {
 
-                return this.error == true? 'alert-danger' : 'alert-success';
+                return this.error === true ? 'alert-danger' : 'alert-success';
 
             }
 
 
         },
 
-        data(){
+        data() {
 
             return {
                 body: '',
                 show: false,
-                error:false
+                error: false
             }
         },
 
-        created(){
+        created() {
             if (this.message) {
                 this.flash(this.message);
+            } else if (this.errormessage) {
+                this.flashError(this.errormessage);
             }
 
             window.events.$on('flash', message => this.flash(message));
@@ -48,7 +50,7 @@
 
         methods: {
 
-            flashError (message) {
+            flashError(message) {
 
                 this.error = true;
                 this.body = message;
@@ -56,14 +58,14 @@
                 this.hide();
             },
 
-            flash (message) {
+            flash(message) {
                 this.error = false;
                 this.body = message;
                 this.show = true;
                 this.hide();
             },
 
-            hide () {
+            hide() {
 
                 setTimeout(() => {
                     this.show = false;

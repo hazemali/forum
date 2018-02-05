@@ -26661,7 +26661,7 @@ return zhTw;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(128);
-module.exports = __webpack_require__(187);
+module.exports = __webpack_require__(193);
 
 
 /***/ }),
@@ -26687,7 +26687,7 @@ Vue.component('flash', __webpack_require__(153));
 Vue.component('thread-view', __webpack_require__(161));
 Vue.component('paginator', __webpack_require__(181));
 Vue.component('user-notifications', __webpack_require__(184));
-Vue.component('avatar-form', __webpack_require__(195));
+Vue.component('avatar-form', __webpack_require__(187));
 
 var app = new Vue({
   el: '#app'
@@ -58123,13 +58123,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 
-    props: ['message'],
+    props: ['message', 'errormessage'],
 
     computed: {
 
         classes: function classes() {
 
-            return this.error == true ? 'alert-danger' : 'alert-success';
+            return this.error === true ? 'alert-danger' : 'alert-success';
         }
 
     },
@@ -58147,6 +58147,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         if (this.message) {
             this.flash(this.message);
+        } else if (this.errormessage) {
+            this.flashError(this.errormessage);
         }
 
         window.events.$on('flash', function (message) {
@@ -61149,26 +61151,13 @@ if (false) {
 
 /***/ }),
 /* 187 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 188 */,
-/* 189 */,
-/* 190 */,
-/* 191 */,
-/* 192 */,
-/* 193 */,
-/* 194 */,
-/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(2)(
   /* script */
-  __webpack_require__(196),
+  __webpack_require__(188),
   /* template */
-  __webpack_require__(197),
+  __webpack_require__(192),
   /* scopeId */
   null,
   /* cssModules */
@@ -61195,12 +61184,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 196 */
+/* 188 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UploadImage_vue__ = __webpack_require__(198);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UploadImage_vue__ = __webpack_require__(189);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UploadImage_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__UploadImage_vue__);
 //
 //
@@ -61261,7 +61250,98 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 197 */
+/* 189 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(2)(
+  /* script */
+  __webpack_require__(190),
+  /* template */
+  __webpack_require__(191),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/hazemali/Code/forum/resources/assets/js/components/UploadImage.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] UploadImage.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0a7780a1", Component.options)
+  } else {
+    hotAPI.reload("data-v-0a7780a1", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 190 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+
+    methods: {
+        onChange: function onChange(e) {
+            var _this = this;
+
+            if (!e.target.files.length) return;
+
+            var file = e.target.files[0];
+            var reader = new FileReader();
+
+            reader.readAsDataURL(file);
+            reader.onload = function (e) {
+                var src = e.target.result;
+                _this.$emit('loaded', { src: src, file: file });
+            };
+        }
+    }
+
+});
+
+/***/ }),
+/* 191 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('input', {
+    attrs: {
+      "type": "file",
+      "accept": "image/*"
+    },
+    on: {
+      "change": _vm.onChange
+    }
+  })])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-0a7780a1", module.exports)
+  }
+}
+
+/***/ }),
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -61303,95 +61383,10 @@ if (false) {
 }
 
 /***/ }),
-/* 198 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 193 */
+/***/ (function(module, exports) {
 
-var Component = __webpack_require__(2)(
-  /* script */
-  __webpack_require__(199),
-  /* template */
-  __webpack_require__(200),
-  /* scopeId */
-  null,
-  /* cssModules */
-  null
-)
-Component.options.__file = "/Users/hazemali/Code/forum/resources/assets/js/components/UploadImage.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] UploadImage.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-0a7780a1", Component.options)
-  } else {
-    hotAPI.reload("data-v-0a7780a1", Component.options)
-  }
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 199 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-
-    methods: {
-        onChange: function onChange(e) {
-            var _this = this;
-
-            if (!e.target.files.length) return;
-
-            var file = e.target.files[0];
-            var reader = new FileReader();
-
-            reader.readAsDataURL(file);
-            reader.onload = function (e) {
-                var src = e.target.result;
-                _this.$emit('loaded', { src: src, file: file });
-            };
-        }
-    }
-
-});
-
-/***/ }),
-/* 200 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('input', {
-    attrs: {
-      "type": "file",
-      "accept": "image/*"
-    },
-    on: {
-      "change": _vm.onChange
-    }
-  })])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-0a7780a1", module.exports)
-  }
-}
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

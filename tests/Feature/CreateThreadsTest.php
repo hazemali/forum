@@ -22,23 +22,38 @@ class CreateThreadsTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $this->get('threads/create')->assertRedirect('login');
-        $this->post('threads', [])->assertRedirect('login');
+        $this->get(route('threads.create'))->assertRedirect(route('login'));
+        $this->post(route('threads.store'), [])->assertRedirect(route('login'));
 
     }
 
 
+    /** @test */
+    public function new_users_must_confirm_their_email_address_before_creating_threads()
+    {
+
+
+        $user = factory('laravel\User')->states('unconfirmed')->create();
+        $this->signIn($user);
+
+        $thread = make('laravel\Thread');
+
+        $this->post('threads', $thread->toArray())
+            ->assertRedirect(route('threads.index'))
+            ->assertSessionHas('flashError');
+    }
+
     /**
      * @test
      */
-    public function an_authenticated_user_can_create_new_forum_threads()
+    public function a_user_can_create_new_forum_threads()
     {
 
         $this->signIn();
 
         $thread = make('laravel\Thread');
 
-        $response = $this->post('threads', $thread->toArray());
+        $response = $this->post(route('threads.store'), $thread->toArray());
 
         $this->get($response->headers->get('Location'))->assertSee($thread->title)
             ->assertSee($thread->body);
@@ -95,7 +110,7 @@ class CreateThreadsTest extends TestCase
 
         $thread = make('laravel\Thread', $overrides);
 
-        return $this->post('threads', $thread->toArray());
+        return $this->post(route('threads.store'), $thread->toArray());
 
     }
 
@@ -108,12 +123,12 @@ class CreateThreadsTest extends TestCase
 
         $this->withExceptionHandling();
 
-        $this->delete( $thread->path())
+        $this->delete($thread->path())
             ->assertRedirect('login');
 
         $this->signIn();
 
-        $this->delete( $thread->path())
+        $this->delete($thread->path())
             ->assertStatus(403);
 
 
@@ -166,7 +181,7 @@ class CreateThreadsTest extends TestCase
         $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
         $this->assertDatabaseMissing('favorites', ['id' => $favorite->id]);
 
-        $this->assertEquals(0 , Activity::count());
+        $this->assertEquals(0, Activity::count());
 
     }
 }
